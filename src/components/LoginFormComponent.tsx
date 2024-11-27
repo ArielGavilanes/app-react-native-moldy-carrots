@@ -5,14 +5,22 @@ import {
   StyleSheet,
   TextInput,
   TouchableOpacity,
+  Image,
 } from 'react-native';
-import { Login } from '../../interface/login';
+import { logo } from '../utils/Logo';
+import { API_PREFIX } from '../utils/ApiPrefix';
+import { useAuth } from '../context/AuthContext';
+import { Login } from '../../interface/Login';
 
 type LoginFormComponentProps = {
   loginScreenMessage: string;
 };
 
 export default function LoginFormComponent(props: LoginFormComponentProps) {
+  const { login } = useAuth();
+  const loginButtonMessage: string = 'Iniciar sesion';
+  const apiUrl: string = API_PREFIX + 'auth/login';
+
   const [formData, setFormData] = useState<Login>({
     username: '',
     password: '',
@@ -24,29 +32,62 @@ export default function LoginFormComponent(props: LoginFormComponentProps) {
       [field]: value,
     }));
   };
+
+  const handleLogin = async (url: string, payload: Login) => {
+    try {
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      // navigation.navigate('Home');
+      const result = await response.json();
+      login(result.token);
+    } catch (error) {
+      console.error('Error in login process:', error);
+    }
+  };
+
   return (
     <View>
-      <Text style={styles.title} className="border-l-gray-200">
+      <Image source={logo} style={styles.logo} className="self-center" />
+
+      <Text className="text-6xl font-bold text-center " style={styles.title}>
         {props.loginScreenMessage}
       </Text>
 
+      <Text
+        className="text-2xl text-center mb-3 font-semibold"
+        style={styles.subtitle}
+      >
+        Es un gusto verte de nuevo
+      </Text>
       <TextInput
         style={styles.input}
-        placeholder="Username"
+        placeholder="Nombre de usuario"
         value={formData.username}
         onChangeText={(text) => handleChange('username', text)}
       />
 
       <TextInput
         style={styles.input}
-        placeholder="Password"
+        placeholder="Contraseña"
         secureTextEntry
         value={formData.password}
         onChangeText={(text) => handleChange('password', text)}
       />
 
-      <TouchableOpacity style={styles.button} className="p-2">
-        <Text style={styles.buttonText}>Login</Text>
+      <TouchableOpacity
+        style={styles.button}
+        className="p-2"
+        onPress={() => handleLogin(apiUrl, formData)}
+      >
+        <Text style={styles.buttonText}>{loginButtonMessage}</Text>
       </TouchableOpacity>
     </View>
   );
@@ -54,22 +95,22 @@ export default function LoginFormComponent(props: LoginFormComponentProps) {
 
 const styles = StyleSheet.create({
   title: {
-    fontSize: 30,
-    fontWeight: 'bold',
-    color: '#f39c12', // Naranja
-    marginBottom: 20,
+    color: '#f39c12',
+  },
+  subtitle: {
+    color: '#f39c12',
   },
   input: {
     width: '100%',
     padding: 12,
     marginBottom: 10,
     borderWidth: 1,
-    borderColor: '#f39c12', // Naranja
+    borderColor: '#f39c12',
     borderRadius: 5,
     backgroundColor: '#fff',
   },
   button: {
-    backgroundColor: '#f39c12', // Naranja
+    backgroundColor: '#f39c12',
     padding: 15,
     width: '100%',
     alignItems: 'center',
@@ -79,5 +120,9 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 18,
     fontWeight: 'bold',
+  },
+  logo: {
+    width: 175,
+    height: 175,
   },
 });

@@ -1,26 +1,27 @@
-import { View, Button, StyleSheet } from 'react-native';
+import { View, TouchableOpacity, Text } from 'react-native';
 import LoginFormComponent from '../components/LoginFormComponent';
 import { useNavigation } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../../types/types';
+import { LoginScreenNavigationProp } from '../types/RoutingTypes';
 
-type LoginScreenNavigationProp = NativeStackNavigationProp<
-  RootStackParamList,
-  'Login'
->;
 export default function LoginScreen() {
-  const loginScreenMessage: string = 'Bienvenido al login';
+  const loginScreenMessage: string = 'Bienvenido!';
   const navigation = useNavigation<LoginScreenNavigationProp>();
+  const goToRegisterScreenMessage: string = 'No tienes una cuenta? Registrate';
 
   function goToRegisterScreen() {
     navigation.navigate('Register');
   }
+
   return (
-    <View className="p-4">
+    <View className="p-4 flex-1 justify-center">
       <LoginFormComponent loginScreenMessage={loginScreenMessage} />
-      <Button title="Ir al registro" onPress={goToRegisterScreen} />
+      <TouchableOpacity onPress={goToRegisterScreen}>
+        <Text className="text-xl mt-2 font-medium">
+          {goToRegisterScreenMessage}
+        </Text>
+      </TouchableOpacity>
     </View>
   );
 }
 
-const styles = StyleSheet.create({});
+// const styles = StyleSheet.create({});
