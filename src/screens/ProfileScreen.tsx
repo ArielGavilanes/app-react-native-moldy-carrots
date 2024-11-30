@@ -1,4 +1,3 @@
-import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
 const ProfileScreen = () => {
@@ -6,7 +5,6 @@ const ProfileScreen = () => {
     <View style={styles.container}>
       <Text style={styles.heading}>Profile Screen</Text>
       <Text style={styles.info}>Welcome to your profile!</Text>
-      {/* Puedes agregar más información o componentes aquí */}
     </View>
   );
 };

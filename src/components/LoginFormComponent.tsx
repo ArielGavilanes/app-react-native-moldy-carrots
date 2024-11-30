@@ -45,7 +45,6 @@ export default function LoginFormComponent(props: LoginFormComponentProps) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
-      // navigation.navigate('Home');
       const result = await response.json();
       login(result.token);
     } catch (error) {
