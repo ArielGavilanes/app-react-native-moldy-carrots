@@ -1,30 +1,30 @@
-import { View, Text, StyleSheet } from 'react-native';
+import { View } from 'react-native';
+import AppBar from '../components/shared/AppBar';
 
 const ProfileScreen = () => {
   return (
-    <View style={styles.container}>
-      <Text style={styles.heading}>Profile Screen</Text>
-      <Text style={styles.info}>Welcome to your profile!</Text>
+    <View className="mt-6 flex">
+      <AppBar></AppBar>
     </View>
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 20,
-  },
-  heading: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 10,
-  },
-  info: {
-    fontSize: 16,
-    color: 'gray',
-  },
-});
+// const styles = StyleSheet.create({
+//   container: {
+//     flex: 1,
+//     justifyContent: 'center',
+//     alignItems: 'center',
+//     padding: 20,
+//   },
+//   heading: {
+//     fontSize: 24,
+//     fontWeight: 'bold',
+//     marginBottom: 10,
+//   },
+//   info: {
+//     fontSize: 16,
+//     color: 'gray',
+//   },
+// });
 
 export default ProfileScreen;

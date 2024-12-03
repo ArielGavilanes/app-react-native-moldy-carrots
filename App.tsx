@@ -11,6 +11,7 @@ import './global.css';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import ProfileScreen from './src/screens/ProfileScreen';
 import { ProfileProvider } from './src/context/ProfileContext';
+import SingleMediaScreen from './src/screens/SingleMediaScreen';
 
 export default function App() {
   const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -22,7 +23,10 @@ export default function App() {
     return (
       <Stack.Navigator screenOptions={{ headerShown: false }}>
         {isAuthenticated ? (
-          <Stack.Screen name="Tabs" component={Tabs} />
+          <>
+            <Stack.Screen name="Tabs" component={Tabs} />
+            <Stack.Screen name="SingleMedia" component={SingleMediaScreen} />
+          </>
         ) : (
           <>
             <Stack.Screen name="Login" component={LoginScreen} />

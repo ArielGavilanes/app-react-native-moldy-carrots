@@ -4,5 +4,9 @@ type UserGreetingProps = {
   username: string;
 };
 export default function UserGreeting(props: UserGreetingProps) {
-  return <Text>Bienvenido!, {props.username}</Text>;
+  return (
+    <Text className="text-3xl ml-1 mt-2">
+      Bienvenido! <Text className="font-semibold"> {props.username}</Text>
+    </Text>
+  );
 }

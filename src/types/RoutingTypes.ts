@@ -1,3 +1,4 @@
+import { RouteProp } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 export type RootStackParamList = {
@@ -6,7 +7,9 @@ export type RootStackParamList = {
   Home: undefined;
   Profile: undefined;
   Tabs: undefined;
+  SingleMedia: { mediaId: number };
 };
+
 export type HomeTabParamList = {
   Home: undefined;
   Profile: undefined;
@@ -26,3 +29,10 @@ export type HomeScreenNavigationProp = NativeStackNavigationProp<
   RootStackParamList,
   'Home'
 >;
+
+export type SingleMediaScreenNavigationProp = NativeStackNavigationProp<
+  RootStackParamList,
+  'SingleMedia'
+>;
+
+export type SingleMediaRouteProp = RouteProp<RootStackParamList, 'SingleMedia'>;
