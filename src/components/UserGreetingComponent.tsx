@@ -5,7 +5,7 @@ type UserGreetingProps = {
 };
 export default function UserGreeting(props: UserGreetingProps) {
   return (
-    <Text className="text-3xl ml-1 mt-2">
+    <Text className="text-3xl ml-1">
       Bienvenido! <Text className="font-semibold"> {props.username}</Text>
     </Text>
   );

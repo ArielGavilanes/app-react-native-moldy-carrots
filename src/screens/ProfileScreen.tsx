@@ -1,10 +1,12 @@
 import { View } from 'react-native';
-import AppBar from '../components/shared/AppBar';
+import { useProfile } from '../context/ProfileContext';
+import ProfileComponent from '../components/ProfileComponent';
 
 const ProfileScreen = () => {
+  const { profile } = useProfile();
   return (
-    <View className="mt-6 flex">
-      <AppBar></AppBar>
+    <View className="flex">
+      <ProfileComponent user={profile} />
     </View>
   );
 };

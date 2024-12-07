@@ -12,6 +12,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import ProfileScreen from './src/screens/ProfileScreen';
 import { ProfileProvider } from './src/context/ProfileContext';
 import SingleMediaScreen from './src/screens/SingleMediaScreen';
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 
 export default function App() {
   const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -25,7 +26,11 @@ export default function App() {
         {isAuthenticated ? (
           <>
             <Stack.Screen name="Tabs" component={Tabs} />
-            <Stack.Screen name="SingleMedia" component={SingleMediaScreen} />
+            <Stack.Screen
+              name="SingleMedia"
+              component={SingleMediaScreen}
+              options={{ headerShown: true }}
+            />
           </>
         ) : (
           <>
@@ -86,12 +91,16 @@ export default function App() {
   );
 
   return (
-    <AuthProvider>
-      <ProfileProvider>
-        <NavigationContainer>
-          <NavigationStack />
-        </NavigationContainer>
-      </ProfileProvider>
-    </AuthProvider>
+    <SafeAreaProvider>
+      <AuthProvider>
+        <ProfileProvider>
+          <SafeAreaView style={{ flex: 1 }} edges={['top']}>
+            <NavigationContainer>
+              <NavigationStack />
+            </NavigationContainer>
+          </SafeAreaView>
+        </ProfileProvider>
+      </AuthProvider>
+    </SafeAreaProvider>
   );
 }

@@ -45,6 +45,10 @@ export default function LoginFormComponent(props: LoginFormComponentProps) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
+      if (response.ok) {
+        console.log('login exitoso');
+      }
+
       const result = await response.json();
       login(result.token);
     } catch (error) {

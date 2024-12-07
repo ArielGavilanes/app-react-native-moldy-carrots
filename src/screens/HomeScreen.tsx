@@ -6,7 +6,6 @@ import { API_PREFIX } from '../utils/ApiPrefix';
 import { useProfile } from '../context/ProfileContext';
 import { MediaI } from '../../interface/MediaI';
 import HomeMedias from '../components/HomeMediasComponent';
-import AppBar from '../components/shared/AppBar';
 
 export default function HomeScreen() {
   ////
@@ -45,7 +44,10 @@ export default function HomeScreen() {
       try {
         const response = await fetch(url, {
           method: 'GET',
-          headers: { Authorization: 'Bearer ' + token },
+          headers: {
+            Authorization: 'Bearer ' + token,
+            'Content-Type': 'application/json',
+          },
         });
 
         if (!response.ok) {
@@ -62,12 +64,10 @@ export default function HomeScreen() {
       }
     };
     getMediaBetweenDate(apiUrl('media/between'));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [logout, saveProfile, token]);
 
   return (
-    <View className="mt-6 flex">
-      <AppBar></AppBar>
+    <View className="mt-6">
       {!profile && <Text>Loading...</Text>}
       {profile && (
         <View>

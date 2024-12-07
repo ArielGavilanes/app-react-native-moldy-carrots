@@ -8,9 +8,9 @@ export default function RegisterScreen() {
     navigation.navigate('Login');
   }
   return (
-    <View className="p-12">
+    <View className="">
       <TouchableOpacity onPress={goToLoginScreen}>
-        <Text>Pantalla de Register</Text>
+        <Text>Pantalla de Login</Text>
       </TouchableOpacity>
     </View>
   );
