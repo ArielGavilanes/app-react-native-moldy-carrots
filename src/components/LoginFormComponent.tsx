@@ -10,7 +10,7 @@ import {
 import { logo } from '../utils/Logo';
 import { API_PREFIX } from '../utils/ApiPrefix';
 import { useAuth } from '../context/AuthContext';
-import { Login } from '../../interface/Login';
+import { Login } from '../interface/Login';
 
 type LoginFormComponentProps = {
   loginScreenMessage: string;

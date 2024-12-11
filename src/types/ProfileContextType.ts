@@ -1,4 +1,4 @@
-import { ProfileI } from '../../interface/ProfileI';
+import { ProfileI } from '../interface/ProfileI';
 
 export interface ProfileContextType {
   profile: ProfileI | null;

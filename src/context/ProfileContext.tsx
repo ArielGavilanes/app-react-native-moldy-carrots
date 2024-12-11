@@ -7,7 +7,7 @@ import {
   useState,
 } from 'react';
 import { ProfileContextType } from '../types/ProfileContextType';
-import { ProfileI } from '../../interface/ProfileI';
+import { ProfileI } from '../interface/ProfileI';
 
 const ProfileContext = createContext<ProfileContextType | undefined>(undefined);
 
@@ -26,7 +26,7 @@ export const ProfileProvider = ({ children }: ProfileProviderProps) => {
       }
     };
     loadProfile();
-  }, [profile]);
+  }, []);
 
   const saveProfile = async (profile: ProfileI) => {
     setProfile(profile);

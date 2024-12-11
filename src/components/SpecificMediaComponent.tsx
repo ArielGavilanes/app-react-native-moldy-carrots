@@ -1,5 +1,5 @@
 import { View, Text, Image, StyleSheet } from 'react-native';
-import { MediaI } from '../../interface/MediaI';
+import { MediaI } from '../interface/MediaI';
 import { getImageBase64 } from '../utils/getImageBase64';
 
 type SpecificMediaScreenProps = {
@@ -9,7 +9,7 @@ export default function SpecificMediaScreen({
   media,
 }: SpecificMediaScreenProps) {
   return (
-    <View>
+    <View className="h-full flex-1">
       <View className='p-4 flex-row w-full rounded-lg mb-3"'>
         <View>
           <Image

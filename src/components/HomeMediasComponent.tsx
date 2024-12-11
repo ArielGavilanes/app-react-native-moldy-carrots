@@ -6,7 +6,7 @@ import {
   StyleSheet,
   ScrollView,
 } from 'react-native';
-import { MediaI } from '../../interface/MediaI';
+import { MediaI } from '../interface/MediaI';
 import { getImageBase64 } from '../utils/getImageBase64';
 import { useNavigation } from '@react-navigation/native';
 import { HomeScreenNavigationProp } from '../types/RoutingTypes';
@@ -18,15 +18,15 @@ const addedMediasMessage: string = 'Recien añadidos';
 export default function HomeMedias({ medias }: HomeMediasProps) {
   const navigation = useNavigation<HomeScreenNavigationProp>();
   return (
-    <View className="h-full">
+    <View className="flex">
       <View>
         <Text className="text-4xl mb-2 font-semibold">
           {addedMediasMessage}
         </Text>
       </View>
       <ScrollView
-        className="mb-2"
-        contentContainerStyle={{ paddingBottom: 85 }}
+        className="mb-2 w-full"
+        contentContainerStyle={{ paddingBottom: 200 }}
       >
         {medias?.map((media) => (
           <View
@@ -48,7 +48,7 @@ export default function HomeMedias({ medias }: HomeMediasProps) {
                 />
               </View>
             </TouchableOpacity>
-            <View className="ml-4">
+            <View className="ml-4 flex-1">
               <Text className="text-4xl font-bold">{media.name}</Text>
               <Text className="text-lg font-medium">
                 Fecha de lanzamiento:{' '}

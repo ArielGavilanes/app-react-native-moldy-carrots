@@ -22,15 +22,15 @@ export default function App() {
     const { isAuthenticated } = useAuth();
 
     return (
-      <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Navigator screenOptions={{ headerShown: true }}>
         {isAuthenticated ? (
           <>
-            <Stack.Screen name="Tabs" component={Tabs} />
             <Stack.Screen
-              name="SingleMedia"
-              component={SingleMediaScreen}
-              options={{ headerShown: true }}
+              name="Tabs"
+              component={Tabs}
+              options={{ headerShown: false }}
             />
+            <Stack.Screen name="SingleMedia" component={SingleMediaScreen} />
           </>
         ) : (
           <>
@@ -45,7 +45,7 @@ export default function App() {
   const Tabs = () => (
     <Tab.Navigator
       screenOptions={{
-        headerShown: false,
+        headerShown: true,
         tabBarStyle: {
           backgroundColor: '#f39c12',
           borderTopLeftRadius: 20,
