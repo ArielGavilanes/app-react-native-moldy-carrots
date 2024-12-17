@@ -8,6 +8,7 @@ export type RootStackParamList = {
   Profile: undefined;
   Tabs: undefined;
   SingleMedia: { mediaId: number };
+  Search: undefined;
 };
 
 export type HomeTabParamList = {
@@ -16,6 +17,10 @@ export type HomeTabParamList = {
   Search: undefined;
 };
 
+export type SearchScreenNavigationProp = NativeStackNavigationProp<
+  RootStackParamList,
+  'Search'
+>;
 export type LoginScreenNavigationProp = NativeStackNavigationProp<
   RootStackParamList,
   'Login'

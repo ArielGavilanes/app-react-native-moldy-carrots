@@ -37,6 +37,7 @@ export default function SingleMediaScreen({ route }: SingleMediaScreenProps) {
   const [reviewsByMediaId, setReviewsByMediaId] = useState<ReviewI[] | null>(
     null,
   );
+  const [descriptionError, setDescriptionError] = useState<string | null>(null);
   const reviewsMessage: string = 'Algunas reseñas de :';
   const emptyReviewsMessage: string = 'Se el primero en añadir una reseña';
 
@@ -46,6 +47,15 @@ export default function SingleMediaScreen({ route }: SingleMediaScreenProps) {
 
   const apiUrl = (mediaId?: number) => {
     return mediaId ? API_PREFIX + 'media/' + mediaId : API_PREFIX + 'review';
+  };
+
+  const validateDescription = () => {
+    if (!description.trim()) {
+      setDescriptionError('La descripción no puede estar vacía');
+      return false;
+    }
+    setDescriptionError(null);
+    return true;
   };
 
   const createReview = async (url: string) => {
@@ -72,9 +82,16 @@ export default function SingleMediaScreen({ route }: SingleMediaScreenProps) {
         setModalVisible(false);
         setRating(0);
         setDescription('');
+        setDescriptionError(null); // Reset error state
       }
     } catch (err) {
       console.log(err);
+    }
+  };
+
+  const handleCreateReview = () => {
+    if (validateDescription()) {
+      createReview(apiUrl());
     }
   };
 
@@ -117,7 +134,6 @@ export default function SingleMediaScreen({ route }: SingleMediaScreenProps) {
       }
     };
     getReviewsByMediaId(API_PREFIX + 'review/byMediaId/' + mediaId);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useLayoutEffect(() => {
@@ -133,6 +149,7 @@ export default function SingleMediaScreen({ route }: SingleMediaScreenProps) {
   const openModal = () => {
     setModalVisible(true);
   };
+
   return (
     <View className="flex-1 h-full">
       <ScrollView
@@ -185,12 +202,20 @@ export default function SingleMediaScreen({ route }: SingleMediaScreenProps) {
 
             <TextInput
               className="w-full p-3 mb-2 border rounded-md bg-white h-64"
-              placeholder="Descripcion"
+              placeholder="Descripción"
               value={description}
-              onChangeText={(text) => setDescription(text)}
-              style={styles.input}
+              onChangeText={(text) => {
+                setDescription(text);
+                setDescriptionError(null);
+              }}
+              style={[styles.input, descriptionError && { borderColor: 'red' }]}
               multiline={true}
             />
+            {descriptionError && (
+              <Text style={{ color: 'red', marginTop: 4 }}>
+                {descriptionError}
+              </Text>
+            )}
 
             <View className="flex-row mt-2">
               <TouchableOpacity
@@ -203,7 +228,7 @@ export default function SingleMediaScreen({ route }: SingleMediaScreenProps) {
               <TouchableOpacity
                 className="ml-4 p-3 rounded-md"
                 style={styles.container}
-                onPress={() => createReview(apiUrl())}
+                onPress={handleCreateReview}
               >
                 <Text className="text-lg font-medium text-white">Guardar</Text>
               </TouchableOpacity>

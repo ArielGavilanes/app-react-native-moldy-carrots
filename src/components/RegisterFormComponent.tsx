@@ -3,23 +3,17 @@ import {
   View,
   Text,
   StyleSheet,
-  Image,
   TextInput,
   TouchableOpacity,
   Alert,
 } from 'react-native';
 import { RegisterI } from '../interface/RegisterI';
-import * as ImagePicker from 'expo-image-picker';
 import { API_PREFIX } from '../utils/ApiPrefix';
 
 export default function RegisterFormComponent() {
-  const registerScreenMessage: string = 'Bienvenido a Moldy Carrots ';
-  // const registerNextStep: string = 'Siguiente';
+  const registerScreenMessage: string = 'Bienvenido a Moldy Carrots';
   const registerButtonMessage: string = 'Registrarse';
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [registerStep] = useState<number>(1);
   const [confirmPassword, setConfirmPassword] = useState<string>('');
-  const [uploadedImage, setUploadedImage] = useState<boolean>(false);
   const apiUrl: string = API_PREFIX + 'auth/register';
 
   const [registerData, setRegisterData] = useState<RegisterI>({
@@ -31,35 +25,45 @@ export default function RegisterFormComponent() {
     password: '',
   });
 
+  const [errors, setErrors] = useState<
+    Partial<RegisterI & { confirmPassword: string }>
+  >({});
+
   const handleChange = (field: keyof RegisterI, value: string) => {
     setRegisterData((prevState) => ({
       ...prevState,
       [field]: value,
     }));
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      [field]: '',
+    }));
   };
 
-  const handlePickImage = async () => {
-    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (status !== 'granted') {
-      Alert.alert('Es necesario el permiso para esta acción');
-      return;
-    }
+  const validateForm = () => {
+    const newErrors: Partial<RegisterI & { confirmPassword: string }> = {};
 
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [1, 1],
-      quality: 0.5,
-    });
+    if (!registerData.username)
+      newErrors.username = 'El nombre de usuario es obligatorio';
+    if (!registerData.name) newErrors.name = 'El nombre es obligatorio';
+    if (!registerData.lastname)
+      newErrors.lastname = 'El apellido es obligatorio';
+    if (!registerData.email)
+      newErrors.email = 'El correo electrónico es obligatorio';
+    if (!registerData.password)
+      newErrors.password = 'La contraseña es obligatoria';
+    if (!confirmPassword)
+      newErrors.confirmPassword = 'Debes confirmar la contraseña';
+    else if (confirmPassword !== registerData.password)
+      newErrors.confirmPassword = 'Las contraseñas no coinciden';
 
-    if (!result.canceled && result.assets) {
-      const image = result.assets[0];
-      setRegisterData({ ...registerData, profileImage: image.uri });
-      setUploadedImage(true);
-    }
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
   const handleRegister = async (url: string) => {
+    if (!validateForm()) return;
+
     try {
       const formData = new FormData();
       formData.append('username', registerData.username);
@@ -75,10 +79,11 @@ export default function RegisterFormComponent() {
         },
         body: formData,
       });
+
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-      console.log('Registro exitoso');
+
       Alert.alert('Éxito', 'Registro completado correctamente.');
     } catch (error) {
       console.error('Error en el registro:', error);
@@ -88,97 +93,80 @@ export default function RegisterFormComponent() {
 
   return (
     <View>
-      <Text className="text-4xl font-bold text-center " style={styles.title}>
+      <Text className="text-4xl font-bold text-center" style={styles.title}>
         {registerScreenMessage}
       </Text>
-      {registerStep === 1 && (
-        <View>
-          <TextInput
-            className="mt-2"
-            style={styles.input}
-            placeholder="Nombre de usuario"
-            value={registerData.username}
-            onChangeText={(text) => handleChange('username', text)}
-          />
-          <TextInput
-            className="mt-2"
-            style={styles.input}
-            placeholder="Nombre"
-            value={registerData.name}
-            onChangeText={(text) => handleChange('name', text)}
-          />
-          <TextInput
-            className="mt-2"
-            style={styles.input}
-            placeholder="Apellido"
-            value={registerData.lastname}
-            onChangeText={(text) => handleChange('lastname', text)}
-          />
-          <TextInput
-            className="mt-2"
-            style={styles.input}
-            placeholder="Correo electrónico"
-            value={registerData.email}
-            onChangeText={(text) => handleChange('email', text)}
-          />
-          <TextInput
-            className="mt-2"
-            style={styles.input}
-            placeholder="Contraseña"
-            value={registerData.password}
-            onChangeText={(text) => handleChange('password', text)}
-          />
-          <TextInput
-            className="mt-2"
-            style={styles.input}
-            placeholder="Confirmar contraseña"
-            value={confirmPassword}
-            onChangeText={(text) => setConfirmPassword(text)}
-          />
 
-          <TouchableOpacity
-            style={styles.button}
-            className="p-2"
-            onPress={() => handleRegister(apiUrl)}
-          >
-            <Text style={styles.buttonText}>{registerButtonMessage}</Text>
-          </TouchableOpacity>
-        </View>
-      )}
+      <View>
+        <TextInput
+          className="mt-2"
+          style={styles.input}
+          placeholder="Nombre de usuario"
+          value={registerData.username}
+          onChangeText={(text) => handleChange('username', text)}
+        />
+        {errors.username && <Text style={styles.error}>{errors.username}</Text>}
 
-      {registerStep === 2 && (
-        <View>
-          {registerData.profileImage ? (
-            <Image
-              source={{ uri: registerData.profileImage }}
-              className="w-40 h-40 rounded-full mb-4 self-center"
-            />
-          ) : (
-            <View className="w-40 h-40 rounded-full bg-gray-300 mb-4 justify-center items-center self-center text-center">
-              <Text className="text-gray-500">
-                Aún no ha seleccionado una imagen
-              </Text>
-            </View>
-          )}
-          {!uploadedImage ? (
-            <TouchableOpacity
-              style={styles.button}
-              className="p-2"
-              onPress={handlePickImage}
-            >
-              <Text style={styles.buttonText}>Subir imagen</Text>
-            </TouchableOpacity>
-          ) : (
-            <TouchableOpacity
-              style={styles.button}
-              className="p-2"
-              onPress={() => handleRegister(apiUrl)}
-            >
-              <Text style={styles.buttonText}>{registerButtonMessage}</Text>
-            </TouchableOpacity>
-          )}
-        </View>
-      )}
+        <TextInput
+          className="mt-2"
+          style={styles.input}
+          placeholder="Nombre"
+          value={registerData.name}
+          onChangeText={(text) => handleChange('name', text)}
+        />
+        {errors.name && <Text style={styles.error}>{errors.name}</Text>}
+
+        <TextInput
+          className="mt-2"
+          style={styles.input}
+          placeholder="Apellido"
+          value={registerData.lastname}
+          onChangeText={(text) => handleChange('lastname', text)}
+        />
+        {errors.lastname && <Text style={styles.error}>{errors.lastname}</Text>}
+
+        <TextInput
+          className="mt-2"
+          style={styles.input}
+          placeholder="Correo electrónico"
+          value={registerData.email}
+          onChangeText={(text) => handleChange('email', text)}
+        />
+        {errors.email && <Text style={styles.error}>{errors.email}</Text>}
+
+        <TextInput
+          className="mt-2"
+          style={styles.input}
+          placeholder="Contraseña"
+          secureTextEntry
+          value={registerData.password}
+          onChangeText={(text) => handleChange('password', text)}
+        />
+        {errors.password && <Text style={styles.error}>{errors.password}</Text>}
+
+        <TextInput
+          className="mt-2"
+          style={styles.input}
+          placeholder="Confirmar contraseña"
+          secureTextEntry
+          value={confirmPassword}
+          onChangeText={(text) => {
+            setConfirmPassword(text);
+            setErrors((prevErrors) => ({ ...prevErrors, confirmPassword: '' }));
+          }}
+        />
+        {errors.confirmPassword && (
+          <Text style={styles.error}>{errors.confirmPassword}</Text>
+        )}
+
+        <TouchableOpacity
+          style={styles.button}
+          className="p-2"
+          onPress={() => handleRegister(apiUrl)}
+        >
+          <Text style={styles.buttonText}>{registerButtonMessage}</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
@@ -207,5 +195,10 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 18,
     fontWeight: 'bold',
+  },
+  error: {
+    color: 'red',
+    fontSize: 14,
+    marginBottom: 10,
   },
 });

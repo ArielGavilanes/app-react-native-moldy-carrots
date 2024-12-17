@@ -8,6 +8,8 @@ import {
 } from 'react-native';
 import { MediaI } from '../interface/MediaI';
 import { getImageBase64 } from '../utils/getImageBase64';
+import { useNavigation } from '@react-navigation/native';
+import { SearchScreenNavigationProp } from '../types/RoutingTypes';
 
 type MediaListComponentProps = {
   medias: MediaI[] | null;
@@ -18,6 +20,8 @@ export default function MediaListComponent({
   medias,
   searchQuery,
 }: MediaListComponentProps) {
+  const navigation = useNavigation<SearchScreenNavigationProp>();
+
   return (
     <View style={styles.wrapper}>
       <Text style={styles.header}>
@@ -27,7 +31,11 @@ export default function MediaListComponent({
       <ScrollView contentContainerStyle={styles.grid}>
         {medias?.map((media) => (
           <View key={media.mediaId} style={styles.card}>
-            <TouchableOpacity>
+            <TouchableOpacity
+              onPress={() =>
+                navigation.navigate('SingleMedia', { mediaId: media.mediaId })
+              }
+            >
               <Image
                 source={{ uri: getImageBase64(media.coverImage) }}
                 style={styles.image}
