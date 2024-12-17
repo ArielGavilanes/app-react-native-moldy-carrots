@@ -49,18 +49,29 @@ export default function HomeMedias({ medias }: HomeMediasProps) {
               </View>
             </TouchableOpacity>
             <View className="ml-4 flex-1">
-              <Text className="text-4xl font-bold">{media.name}</Text>
-              <Text className="text-lg font-medium">
+              <Text className="text-4xl font-bold text-white">
+                {media.name}
+              </Text>
+              <Text className="text-lg font-medium text-white">
                 Fecha de lanzamiento:{' '}
-                <Text className="font-normal">{media.releaseDate}</Text>
+                <Text className="font-normal text-white">
+                  {media.releaseDate}
+                </Text>
               </Text>
-              <Text className="text-lg font-medium">
+              <Text className="text-lg font-medium text-white">
                 Genero:{' '}
-                <Text className="font-normal">{media.genreId.name}</Text>
+                <Text className="font-normal text-white">
+                  {media.genreId.name}
+                </Text>
               </Text>
-              <Text className="text-lg font-medium">{media.typeId.name}</Text>
-              <Text className="text-lg font-medium">
-                <Text className="text-3xl">{media.rating}</Text>
+              <Text className="text-lg font-medium text-white">
+                {media.typeId.name}
+              </Text>
+              <Text className="text-lg font-medium text-white">
+                <Text className="text-3xl text-white">
+                  {media?.rating?.toFixed(2)}
+                  <Text className="font-bold"> /5</Text>
+                </Text>
               </Text>
             </View>
           </View>

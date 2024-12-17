@@ -13,6 +13,7 @@ export type RootStackParamList = {
 export type HomeTabParamList = {
   Home: undefined;
   Profile: undefined;
+  Search: undefined;
 };
 
 export type LoginScreenNavigationProp = NativeStackNavigationProp<

@@ -4,6 +4,8 @@ import {
   StyleSheet,
   TextInput,
   TouchableOpacity,
+  ScrollView,
+  ActivityIndicator,
 } from 'react-native';
 import SpecificMediaScreen from '../components/SpecificMediaComponent';
 import { API_PREFIX } from '../utils/ApiPrefix';
@@ -16,6 +18,8 @@ import FloatingButton from '../components/shared/FloatingButton';
 import Modal from 'react-native-modal';
 import { Rating } from 'react-native-ratings';
 import { CreateReview } from '../interface/CreateReviewI';
+import ReviewListComponent from '../components/shared/ReviewListComponent';
+import { ReviewI } from '../interface/ReviewI';
 
 type SingleMediaScreenProps = {
   route: SingleMediaRouteProp;
@@ -30,9 +34,13 @@ export default function SingleMediaScreen({ route }: SingleMediaScreenProps) {
   const addReviewModalMessage: string = 'Añadir una nueva reseña';
   const [rating, setRating] = useState(0);
   const [description, setDescription] = useState<string>('');
+  const [reviewsByMediaId, setReviewsByMediaId] = useState<ReviewI[] | null>(
+    null,
+  );
+  const reviewsMessage: string = 'Algunas reseñas de :';
+  const emptyReviewsMessage: string = 'Se el primero en añadir una reseña';
 
   const ratingCompleted = (rating: number) => {
-    console.log('Rating is: ' + rating);
     setRating(rating);
   };
 
@@ -62,6 +70,8 @@ export default function SingleMediaScreen({ route }: SingleMediaScreenProps) {
 
       if (response.ok) {
         setModalVisible(false);
+        setRating(0);
+        setDescription('');
       }
     } catch (err) {
       console.log(err);
@@ -88,6 +98,25 @@ export default function SingleMediaScreen({ route }: SingleMediaScreenProps) {
     };
 
     findMediaById(apiUrl(mediaId));
+
+    const getReviewsByMediaId = async (url: string) => {
+      try {
+        const response = await fetch(url, {
+          method: 'GET',
+          headers: { Authorization: 'Bearer ' + token },
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const result = await response.json();
+        setReviewsByMediaId(result);
+      } catch (error) {
+        console.error('Error in get reviews by media id:', error);
+      }
+    };
+    getReviewsByMediaId(API_PREFIX + 'review/byMediaId/' + mediaId);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -106,11 +135,34 @@ export default function SingleMediaScreen({ route }: SingleMediaScreenProps) {
   };
   return (
     <View className="flex-1 h-full">
-      <SpecificMediaScreen media={specificMedia}></SpecificMediaScreen>
+      <ScrollView
+        className="w-full"
+        contentContainerStyle={{ paddingBottom: 75 }}
+      >
+        <SpecificMediaScreen media={specificMedia} />
+        <Text className="text-4xl p-2 font-semibold flex-1">
+          {reviewsMessage}{' '}
+          <Text className="font-normal">{specificMedia?.name}</Text>
+        </Text>
+        <View className="p-2">
+          {reviewsByMediaId?.length == 0 ? (
+            <Text>{emptyReviewsMessage}</Text>
+          ) : reviewsByMediaId ? (
+            <View className="p-2">
+              <ReviewListComponent
+                reviews={reviewsByMediaId?.reverse()}
+                profile={true}
+              />
+            </View>
+          ) : (
+            <ActivityIndicator size="large" color="#f39c12" />
+          )}
+        </View>
+      </ScrollView>
+
       <FloatingButton icon="chatbubble-ellipses" onPress={openModal} />
       <Modal
         isVisible={isModalVisible}
-        // onBackdropPress={() => setModalVisible(false)}
         animationIn="slideInUp"
         animationOut="slideOutDown"
         backdropColor="rgba(0, 0, 0, 0.5)"
@@ -127,6 +179,7 @@ export default function SingleMediaScreen({ route }: SingleMediaScreenProps) {
               startingValue={rating}
               imageSize={50}
               onFinishRating={ratingCompleted}
+              fractions={2}
               style={{ paddingVertical: 15 }}
             />
 

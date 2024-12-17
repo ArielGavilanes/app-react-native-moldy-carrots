@@ -1,4 +1,4 @@
-import { View } from 'react-native';
+import { View, Text, ScrollView, ActivityIndicator } from 'react-native';
 import { useProfile } from '../context/ProfileContext';
 import ProfileComponent from '../components/ProfileComponent';
 import { useEffect, useLayoutEffect, useState } from 'react';
@@ -6,13 +6,18 @@ import { useAuth } from '../context/AuthContext';
 import { ReviewI } from '../interface/ReviewI';
 import { API_PREFIX } from '../utils/ApiPrefix';
 import { useNavigation } from '@react-navigation/native';
+import FloatingButton from '../components/shared/FloatingButton';
+import ReviewListComponent from '../components/shared/ReviewListComponent';
 
 const ProfileScreen = () => {
+  const { logout } = useAuth();
   const { profile } = useProfile();
   const { token } = useAuth();
   const [reviewsById, setReviewsById] = useState<ReviewI[] | null>(null);
   const apiUrl: string = API_PREFIX + 'review/byUserId';
   const navigation = useNavigation();
+  const reviewsMessage: string = 'Algunas de tu reseñas:';
+  const emptyReviewsMessage: string = 'Oops! Parece que aqui no hay nada :(';
 
   useEffect(() => {
     const getReviewsByUserId = async (url: string) => {
@@ -49,7 +54,26 @@ const ProfileScreen = () => {
 
   return (
     <View className="flex-1 h-full">
-      <ProfileComponent user={profile} reviews={reviewsById} />
+      <ScrollView
+        className="w-full"
+        contentContainerStyle={{ paddingBottom: 75 }}
+      >
+        <ProfileComponent user={profile} reviewLength={reviewsById?.length} />
+        <Text className="text-4xl p-2 font-semibold">{reviewsMessage}</Text>
+        {reviewsById?.length == 0 ? (
+          <Text>{emptyReviewsMessage}</Text>
+        ) : reviewsById ? (
+          <View className="p-2">
+            <ReviewListComponent
+              reviews={reviewsById?.reverse()}
+              profile={true}
+            />
+          </View>
+        ) : (
+          <ActivityIndicator size="large" color="#f39c12" />
+        )}
+      </ScrollView>
+      <FloatingButton icon="log-out" onPress={logout} />
     </View>
   );
 };

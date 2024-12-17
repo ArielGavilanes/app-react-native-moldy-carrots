@@ -13,6 +13,7 @@ import ProfileScreen from './src/screens/ProfileScreen';
 import { ProfileProvider } from './src/context/ProfileContext';
 import SingleMediaScreen from './src/screens/SingleMediaScreen';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+import SearchScreen from './src/screens/SearchScreen';
 
 export default function App() {
   const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -69,6 +70,20 @@ export default function App() {
               style={{
                 transform: [{ scale: focused ? 1.2 : 1 }],
               }}
+            />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Search"
+        component={SearchScreen}
+        options={{
+          tabBarLabel: 'Buscar',
+          tabBarIcon: ({ color, size, focused }) => (
+            <Ionicons
+              name={focused ? 'search' : 'search-outline'}
+              size={size}
+              color={color}
             />
           ),
         }}

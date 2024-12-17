@@ -19,7 +19,7 @@ export default function SpecificMediaScreen({
             resizeMode="cover"
           />
         </View>
-        <View className="ml-4">
+        <View className="ml-4 flex-1">
           <Text className="text-4xl font-bold">{media?.name}</Text>
           <Text className="text-lg font-medium">
             Fecha de lanzamiento:{' '}
@@ -30,7 +30,9 @@ export default function SpecificMediaScreen({
           </Text>
           <Text className="text-lg font-medium">{media?.typeId.name}</Text>
           <Text className="text-lg font-medium">
-            <Text className="text-3xl">{media?.rating}</Text>
+            <Text className="text-3xl font-normal">
+              {media?.rating?.toFixed(2)} <Text className="font-bold">/5</Text>
+            </Text>
           </Text>
         </View>
       </View>
